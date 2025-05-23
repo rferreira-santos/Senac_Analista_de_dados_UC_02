@@ -1,0 +1,17 @@
+import pandas as pd
+import numpy as np
+
+print('---- OBTENDO DADOS ----')
+
+# Importando a base de dados de ocorrências    
+endereco_dados = 'https://www.ispdados.rj.gov.br/Arquivos/BaseDPEvolucaoMensalCisp.csv'
+
+# Criando o DataFrame ocorrências
+df_ocorrencias = pd.read_csv(endereco_dados,sep=';',encoding='iso-8859-1')
+df_hom_doloso = df_ocorrencias[['ano','hom_doloso']]
+df_hom_doloso = df_hom_doloso[df_hom_doloso['ano'].between(2003,2024)]
+df_hom_doloso = df_hom_doloso.groupby(['ano']).sum(['hom_doloso']).reset_index()
+
+# Exibindo a base de dados ocorrências
+print('\n---- EXIBINDO A BASE DE DADOS -----')
+print(df_hom_doloso)

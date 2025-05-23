@@ -41,6 +41,31 @@ minimo_age = np.min(array_titanic_age)
 amplitude_fare = maximo_fare - minimo_fare
 amplitude_age = maximo_age - minimo_age
 
+# Obtendo os quartis do valor da passagem e da idade
+q1_age = np.quantile(array_titanic_age, 0.25, method='weibull')
+q2_age = np.quantile(array_titanic_age, 0.50, method='weibull')
+q3_age = np.quantile(array_titanic_age, 0.75, method='weibull')
+iqr_age = q3_age - q1_age
+
+q1_fare = np.quantile(array_titanic_fare, 0.25, method='weibull')
+q2_fare = np.quantile(array_titanic_fare, 0.50, method='weibull')
+q3_fare = np.quantile(array_titanic_fare, 0.75, method='weibull')
+iqr_fare = q3_fare - q1_fare
+
+# Identificando os valores discrepantes - outliers da passagem e da idade
+limite_superior_age = q3_age + (1.5 * iqr_age)
+limite_inferior_age = q1_age - (1.5 * iqr_age)
+
+limite_superior_fare = q3_fare + (1.5 * iqr_fare)
+limite_inferior_fare = q1_fare - (1.5 * iqr_fare)
+
+# Filtrando o dataframe dos valores discrepantes - outliers da passagem e da idade
+df_age_outliers_superiores = df_titanic[df_titanic['Age'] > limite_superior_age]
+df_age_outliers_inferiores = df_titanic[df_titanic['Age'] < limite_inferior_age]
+
+df_fare_outliers_superiores = df_titanic[df_titanic['Fare'] > limite_superior_fare]
+df_fare_outliers_inferiores = df_titanic[df_titanic['Fare'] < limite_inferior_fare]
+
 # Obtendo a quantidade de sobreviventes
 qtd_passageiros = df_titanic['Survived'].count()
 qtd_sobreviventes = df_titanic[df_titanic['Survived'] == 1].count()
@@ -65,6 +90,22 @@ print(f"A distância entre a média e a mediana é {distancia_age}")
 print(f"O menor valor das idades é {minimo_age}")
 print(f"O maior valor das idades é {maximo_age}")
 print(f"A amplitude dos valores das idades é {amplitude_age}")
+print(f'O valor do 1º quartil(25%) do valor das idades é {q1_age}')
+print(f'O valor do 2º quartil(50%) do valor das idades é {q2_age}')
+print(f'O valor do 3º quartil(75%) do valor das idades é {q3_age}')
+print(f'O valor do iqr do valor das idades é {iqr_age}')
+print(f'O limite inferior do valor das idades é {limite_inferior_age}')
+print(f'O limite superior do valor das idades é {limite_superior_age}')
+if len(df_age_outliers_inferiores) == 0:
+    print('\nNão existem outliers inferiores')
+else:
+    print('\n------------ Outliers Inferiores ---------------')
+    print(df_age_outliers_inferiores)
+if len(df_age_outliers_superiores) == 0:
+    print('\nNão existem outliers superiores')
+else:
+    print('\n------------ Outliers Superiores ---------------')
+    print(df_age_outliers_superiores)
 
 
 # Exibindo os dados sobre o valor das passagens
@@ -76,6 +117,22 @@ print(f"A distância entre a média e a mediana é {distancia_fare}")
 print(f"O menor valor das passagens é {minimo_fare:.2f}")
 print(f"O maior valor das passagens é {maximo_fare:.2f}")
 print(f"A amplitude dos valores das passagens é {amplitude_fare:.2f}")
+print(f'O valor do 1º quartil(25%) do valor das passagens é {q1_fare}')
+print(f'O valor do 2º quartil(50%) do valor das passagens é {q2_fare}')
+print(f'O valor do 3º quartil(75%) do valor das passagens é {q3_fare}')
+print(f'O valor do iqr do valor das passagens é {iqr_fare}')
+print(f'O limite inferior do valor das passagens é {limite_inferior_fare}')
+print(f'O limite superior do valor das passagens é {limite_superior_fare}')
+if len(df_fare_outliers_inferiores) == 0:
+    print('\nNão existem outliers inferiores')
+else:
+    print('\n------------ Outliers Inferiores ---------------')
+    print(df_fare_outliers_inferiores)
+if len(df_fare_outliers_superiores) == 0:
+    print('\nNão existem outliers superiores')
+else:
+    print('\n------------ Outliers Superiores ---------------')
+    print(df_fare_outliers_superiores)
 
 
 # Exibindo os dados sobre os sobreviventes
@@ -91,9 +148,3 @@ print(f"A quantidade de mulheres sobreviventes foi {qtd_fem_sobre.values[0]}")
 print("\n-- OBTENDO INFORMAÇÕES SOBRE OS PASSAGEIROS --")
 print(f"A quantidade total de homens é {qtd_masc.values[0]}")
 print(f"A quantidade total de mulheres é {qtd_fem.values[0]}")
-
-
-
-
-
-
